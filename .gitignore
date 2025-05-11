@@ -1,22 +1,81 @@
-### AL ###
-#Template for AL projects for Dynamics 365 Business Central
-#launch.json folder
+# Visual Studio e Rider
 .vscode/
-#Cache folder
-.alcache/
-#Symbols folder
-.alpackages/
-#Snapshots folder
-.snapshots/
-#Testing Output folder
-.output/
-#Extension App-file
-*.app
-#Rapid Application Development File
-rad.json
-#Translation Base-file
-*.g.xlf
-#License-file
-*.flf
-#Test results file
-TestResults.xml
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.cache
+
+# Binários e Compilação
+bin/
+obj/
+out/
+TestResults/
+*.dll
+*.exe
+*.log
+*.pdb
+*.appx
+*.appxsym
+*.nupkg
+*.snupkg
+*.cache
+*.manifest
+*.rsp
+
+# Logs e Debug
+logs/
+*.log
+*.tlog
+*.trace
+*.json
+
+# Configurações Locais e Secrets
+appsettings.Development.json
+appsettings.Local.json
+appsettings.json.user
+secrets.json
+.env
+.env.local
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+project.lock.json
+artifacts/
+
+# Rider e Resharper
+*.sln.iml
+.idea/
+*.DotSettings
+*_ReSharper.Caches
+
+# Diretórios Temporários
+temp/
+tmp/
+*.bak
+*.swp
+
+# Docker
+**/[Dd]ockerfile*
+**/[Dd]ocker-compose*
+/.dockerignore
+
+# Deploy e Publish
+publish/
+wwwroot/
+node_modules/
+dist/
+
+# Testes
+coverage/
+coverage.info
+*.trx
+*.coverage
+*.coveragexml
+
+# Arquivos gerados pelo .NET
+*.generated.cs
