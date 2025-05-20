@@ -8,7 +8,7 @@ using Xunit;
 
 using ActivateRequest = Application.UseCases.User.Activate.Request;
 using ActivateHandler = Application.UseCases.User.Activate.Handler;
-using Domain.Interfaces.Repositories.Cold;
+using Domain.Interfaces.Repositories;
 
 namespace Test.Green.Application.UseCases;
 

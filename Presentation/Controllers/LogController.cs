@@ -6,14 +6,14 @@ using Domain.Records;
 using Presentation.Common;
 using Swashbuckle.AspNetCore.Annotations;
 
-using CreateLogRequest = Application.UseCases.Log.Hot.Create.Request;
-using CreateLogResponse = Application.UseCases.Log.Hot.Create.Response;
-using ReadAllTodayLogRequest = Application.UseCases.Log.Hot.Read.ReadAllToday.Request;
-using ReadAllTodayLogResponse = Application.UseCases.Log.Hot.Read.ReadAllToday.Response;
-using ReadByAppLogRequest = Application.UseCases.Log.Hot.Read.ReadByApp.Request;
-using ReadByAppLogResponse = Application.UseCases.Log.Hot.Read.ReadByApp.Response;
-using ReadByIdLogRequest = Application.UseCases.Log.Hot.Read.ReadById.Request;
-using ReadByIdLogResponse = Application.UseCases.Log.Hot.Read.ReadById.Response;
+using CreateLogRequest = Application.UseCases.Log.Create.Request;
+using CreateLogResponse = Application.UseCases.Log.Create.Response;
+using ReadAllTodayLogRequest = Application.UseCases.Log.Read.ReadAllToday.Request;
+using ReadAllTodayLogResponse = Application.UseCases.Log.Read.ReadAllToday.Response;
+using ReadByAppLogRequest = Application.UseCases.Log.Read.ReadByApp.Request;
+using ReadByAppLogResponse = Application.UseCases.Log.Read.ReadByApp.Response;
+using ReadByIdLogRequest = Application.UseCases.Log.Read.ReadById.Request;
+using ReadByIdLogResponse = Application.UseCases.Log.Read.ReadById.Response;
 
 namespace Presentation.Controllers;
 

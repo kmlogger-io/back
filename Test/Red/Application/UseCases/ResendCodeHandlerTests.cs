@@ -5,7 +5,7 @@ using Application.UseCases.User.ResendCode;
 using Bogus;
 using Domain.Entities;
 using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Repositories.Cold;
+using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.ValueObjects;
 using FluentAssertions;

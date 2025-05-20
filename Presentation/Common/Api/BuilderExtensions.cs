@@ -10,9 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Tokens;
 using Application.DI;
-using Presentation.BackGround;
-using Application.BackGround;
-using Domain.Interfaces.BackGroundServices;
 using Newtonsoft.Json.Serialization;
 using Presentation.Common.Converters;
 
@@ -29,9 +26,7 @@ public  static class BuilderExtensions
         Configuration.BackendUrl = Environment.GetEnvironmentVariable("BACKEND_URL") ?? string.Empty;
         Configuration.VersionApi = Environment.GetEnvironmentVariable("VERSION_API") ?? string.Empty;
         Configuration.ApiKey = Environment.GetEnvironmentVariable("API_KEY") ?? string.Empty;
-        Configuration.ConnectionStringPostgresql = Environment.GetEnvironmentVariable("COLD_CONNECTION_STRING") ?? string.Empty;
-        Configuration.SqliteConnectionString = "Data Source=" + Path.GetFullPath(Path.Combine(projectRoot, "Infrastructure",
-         "dbkmlogger.db"));
+        Configuration.ClickHouseConnectionString = Environment.GetEnvironmentVariable("CLICK_HOUSE_CONNECTIONSTRING") ?? string.Empty;
         Configuration.ApiKeyAttribute = "X-API-KEY";
         Configuration.KEY_KMLOGGER = Environment.GetEnvironmentVariable("KEY_KMLOGGER") ?? string.Empty;
         Configuration.FrontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL") ?? "http://localhost:4200";
@@ -192,8 +187,5 @@ public  static class BuilderExtensions
         
         builder.Services.AppServices();
         builder.Services.ConfigureInfraServices();
-        builder.Services.AddScoped<ILogTransferService, LogTransferService>();
-        builder.Services.AddScoped<LogTransferJob>(); 
-        builder.Services.AddHostedService<LogTransferWorker>();
     }
 }

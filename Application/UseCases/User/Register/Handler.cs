@@ -2,7 +2,7 @@ using System;
 using AutoMapper;
 using Domain;
 using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Repositories.Cold;
+using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Records;
 using Flunt.Notifications;

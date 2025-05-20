@@ -1,8 +1,6 @@
-using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Presentation.Common.Api;
 using Presentation.Middlewares;
 
 using LoginRequest = Application.UseCases.User.Login.Request;
