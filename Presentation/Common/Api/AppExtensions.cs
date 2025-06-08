@@ -9,6 +9,13 @@ public static class AppExtensions
     {
         app.UseHttpsRedirection();
         app.UseForwardedHeaders();
+
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "KMLogger API");
+            c.RoutePrefix = "swagger";
+        });
     }
     #endregion ConfigureEnvironment
 
