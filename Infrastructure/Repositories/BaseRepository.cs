@@ -38,7 +38,7 @@ public abstract class BaseRepository<T>(DbContext context)
         params Expression<Func<T, object>>[] includes)
     {
         var query = context.Set<T>().AsQueryable();
-        if (filter != null)
+        if (filter is not null)
         {
             query = query.Where(filter);
         }
@@ -55,7 +55,7 @@ public abstract class BaseRepository<T>(DbContext context)
         params Expression<Func<T, object>>[] includes)
     {
         var query = context.Set<T>().AsQueryable();
-        if (filter != null)
+        if (filter is not null)
         {
             query = query.Where(filter);
         }
@@ -77,17 +77,17 @@ public abstract class BaseRepository<T>(DbContext context)
     {
         IQueryable<T> query = context.Set<T>();
 
-        if (includes != null)
+        if (includes is not null)
         {
             query = includes.Aggregate(query, (current, include) => current.Include(include));
         }
 
-        if (filter != null)
+        if (filter is not null)
         {
             query = query.Where(filter);
         }
 
-        if (selector != null)
+        if (selector is not null)
         {
             return await query.Select(selector)
                                 .Skip(skip)
@@ -108,17 +108,17 @@ public abstract class BaseRepository<T>(DbContext context)
     {
         IQueryable<T> query = context.Set<T>();
 
-        if (includes != null)
+        if (includes is not null)
         {
             query = includes.Aggregate(query, (current, include) => current.Include(include));
         }
 
-        if (filter != null)
+        if (filter is not null)
         {
             query = query.Where(filter);
         }
 
-        if (selector != null)
+        if (selector is not null)
         {
             return await query.Select(selector)
                                 .FirstOrDefaultAsync(cancellationToken);

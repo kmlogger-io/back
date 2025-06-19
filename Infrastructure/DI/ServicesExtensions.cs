@@ -2,13 +2,10 @@ using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
-
-
 using Infrastructure.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Domain;
-using ClickHouse.EntityFrameworkCore.Extensions;
 
 namespace Infrastructure.DI;
 
@@ -30,6 +27,6 @@ public static class ServicesExtensions
     {
         services
             .AddDbContext<KmloggerDbContext>(
-                x => { x.UseClickHouse(Configuration.ClickHouseConnectionString); });
+                x => { x.UseNpgsql(StringConnection.BuildConnectionString()); });
     }
 }

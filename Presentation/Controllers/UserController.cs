@@ -32,7 +32,6 @@ public class UserController(IMediator mediator) : ApiControllerBase
     /// Authenticates a user and returns a JWT token if successful.
     /// </summary>
     [HttpPost("Login")]
-    [ApiKey]
     [SwaggerOperation(OperationId = "UserLogin")]
     [ProducesResponseType(typeof(BaseResponse<LoginResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseResponse<LoginResponse>), StatusCodes.Status403Forbidden)]
@@ -64,7 +63,6 @@ public class UserController(IMediator mediator) : ApiControllerBase
     /// Activates a user account using the email and activation token.
     /// </summary>
     [HttpPut("Activate-Account")]
-    [ApiKey]
     [SwaggerOperation(OperationId = "UserActivate")]
     [ProducesResponseType(typeof(BaseResponse<ActivateResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseResponse<ActivateResponse>), StatusCodes.Status400BadRequest)]
@@ -80,7 +78,6 @@ public class UserController(IMediator mediator) : ApiControllerBase
     /// Sends a password reset token to the user's email address.
     /// </summary>
     [HttpPost("Forgot-Password")]
-    [ApiKey]
     [SwaggerOperation(OperationId = "UserForgotPassword")]
     [ProducesResponseType(typeof(BaseResponse<ForgotPasswordResponse>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(BaseResponse<ForgotPasswordResponse>), StatusCodes.Status404NotFound)]
@@ -99,7 +96,6 @@ public class UserController(IMediator mediator) : ApiControllerBase
     [AllowAnonymous]
     [SwaggerOperation(OperationId = "UserForgotPasswordActivate")]
     [ProducesResponseType(typeof(BaseResponse<ActivatePasswordResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(BaseResponse<ActivatePasswordResponse>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<BaseResponse<ActivatePasswordResponse>>> ActivateForgotPassword(
         [FromBody] ActivatePasswordRequest request,
         CancellationToken cancellationToken)

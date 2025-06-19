@@ -9,52 +9,86 @@ namespace Infrastructure.Data.FluentMapping
         public void Configure(EntityTypeBuilder<Picture> builder)
         {
             builder.ToTable("Pictures");
+            
             builder.HasKey(p => p.Id);
+            
             builder.Property(p => p.Id)
                 .HasColumnName("Id")
-                .HasColumnType("UUID")
+                .HasColumnType("uuid")
                 .ValueGeneratedOnAdd()
                 .IsRequired();
+            
             builder.Property(p => p.CreatedDate)
                 .HasColumnName("CreatedDate")
-                .HasColumnType("DateTime")
+                .HasColumnType("timestamptz")
                 .HasDefaultValueSql("now()")
                 .IsRequired();
+            
             builder.Property(p => p.UpdatedDate)
                 .HasColumnName("UpdatedDate")
-                .HasColumnType("DateTime")
+                .HasColumnType("timestamptz")
                 .HasDefaultValueSql("now()")
                 .IsRequired();
+            
             builder.Property(p => p.DeletedDate)
                 .HasColumnName("DeletedDate")
-                .HasColumnType("DateTime")
+                .HasColumnType("timestamptz")
                 .IsRequired(false);
+            
+            builder.Property(p => p.Content)
+                .HasColumnName("Content")
+                .HasColumnType("text");
+
             builder.OwnsOne(p => p.Name, name =>
             {
                 name.Property(n => n.Name)
                     .HasColumnName("Name")
-                    .HasColumnType("String")
+                    .HasColumnType("varchar(100)")
                     .HasMaxLength(100)
                     .IsRequired();
             });
+            
             builder.Property(p => p.AwsKey)
                 .HasColumnName("AwsKey")
-                .HasColumnType("String")
+                .HasColumnType("varchar(200)")
                 .HasMaxLength(200)
                 .IsRequired();
+            
             builder.Property(p => p.UrlExpired)
                 .HasColumnName("UrlExpired")
-                .HasColumnType("DateTime")
+                .HasColumnType("timestamptz")
                 .IsRequired();
+            
             builder.Property(p => p.UrlTemp)
                 .HasColumnName("UrlTemp")
-                .HasColumnType("String")
-                .HasMaxLength(300)
+                .HasColumnType("varchar(500)")
+                .HasMaxLength(500)
                 .IsRequired();
+            
             builder.Property(p => p.Ativo)
                 .HasColumnName("Ativo")
-                .HasColumnType("Bool")
+                .HasColumnType("boolean")
+                .HasDefaultValue(true)
                 .IsRequired();
+            
+            // Índices para performance
+            builder.HasIndex(p => p.CreatedDate)
+                .HasDatabaseName("IX_Pictures_CreatedDate");
+            
+            builder.HasIndex(p => p.Ativo)
+                .HasDatabaseName("IX_Pictures_Ativo");
+            
+            builder.HasIndex(p => p.UrlExpired)
+                .HasDatabaseName("IX_Pictures_UrlExpired");
+            
+            // Índice único no AwsKey para evitar duplicação
+            builder.HasIndex(p => p.AwsKey)
+                .IsUnique()
+                .HasDatabaseName("IX_Pictures_AwsKey_Unique");
+            
+            // Índice composto para limpeza de URLs expiradas
+            builder.HasIndex(p => new { p.UrlExpired, p.Ativo })
+                .HasDatabaseName("IX_Pictures_UrlExpired_Ativo");
         }
     }
 }

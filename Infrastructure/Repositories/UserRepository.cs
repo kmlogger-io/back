@@ -18,9 +18,9 @@ public class UserRepository(KmloggerDbContext context)
 
     public async Task<User> ActivateUserAsync(string email, Guid token, CancellationToken cancellationToken)
     {
-       var user =  (await context.Set<User>().AsNoTracking()
+       var user =  await context.Set<User>().AsNoTracking()
             .FirstOrDefaultAsync(x => !x.Active && x.Email.Address!.Equals(email) && x.TokenActivate.Equals(token),
-                cancellationToken: cancellationToken));
+                cancellationToken: cancellationToken);
 
        user?.AssignActivate(true);
        Update(user);

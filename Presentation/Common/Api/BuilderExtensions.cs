@@ -25,15 +25,13 @@ public  static class BuilderExtensions
         Configuration.JwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? string.Empty;
         Configuration.BackendUrl = Environment.GetEnvironmentVariable("BACKEND_URL") ?? string.Empty;
         Configuration.VersionApi = Environment.GetEnvironmentVariable("VERSION_API") ?? string.Empty;
-        Configuration.ApiKey = Environment.GetEnvironmentVariable("API_KEY") ?? string.Empty;
-        Configuration.ClickHouseConnectionString = Environment.GetEnvironmentVariable("CLICK_HOUSE_CONNECTIONSTRING") ?? string.Empty;
-        Configuration.ApiKeyAttribute = "X-API-KEY";
         Configuration.KEY_KMLOGGER = Environment.GetEnvironmentVariable("KEY_KMLOGGER") ?? string.Empty;
         Configuration.FrontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL") ?? "http://localhost:4200";
         Configuration.SmtpUser = Environment.GetEnvironmentVariable("SMTP_USER") ?? string.Empty;
         Configuration.SmtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER") ?? string.Empty;
         Configuration.SmtpPort = int.TryParse(Environment.GetEnvironmentVariable("SMTP_PORT"), out var smtpPort) ? smtpPort : 587;
         Configuration.SmtpPass = Environment.GetEnvironmentVariable("SMTP_PASS") ?? string.Empty;
+        
       builder.Services.AddControllers(options =>
         {
             options.Filters.Add(new ProducesAttribute("application/json"));
@@ -116,59 +114,59 @@ public  static class BuilderExtensions
             ));
     }
 
+    public static void AddSwagger(this WebApplicationBuilder builder)
+    { 
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.EnableAnnotations();
+            options.CustomSchemaIds(type =>
+            {
+                if (type.IsGenericType)
+                {
+                    var genericTypeName = type.GetGenericTypeDefinition().Name;
+                    genericTypeName = genericTypeName.Substring(0, genericTypeName.IndexOf('`'));
+
+                    var genericArgs = string.Join("_", type.GenericTypeArguments.Select(ProcessTypeName));
+                    return $"{genericTypeName}_{genericArgs}";
+                }
+
+                return ProcessTypeName(type);
+            });
+
+            static string ProcessTypeName(Type type)
+            {
+                if (type.IsGenericType)
+                {
+                    var genericTypeName = type.GetGenericTypeDefinition().Name;
+                    genericTypeName = genericTypeName.Substring(0, genericTypeName.IndexOf('`')); // Remove o sufixo `1, `2, etc.
+                    var genericArgs = string.Join("_", type.GenericTypeArguments.Select(ProcessTypeName));
+                    return $"{genericTypeName}_{genericArgs}";
+                }
+
+                if (type.FullName != null && type.FullName.Contains("UseCases"))
+                {
+                    return type.FullName
+                        .Replace(".", "_")
+                        .Replace("BaseResponse_", "")
+                        .Substring(type.FullName.IndexOf("UseCases"));
+                }
+
+                return type.FullName?.Replace(".", "_").Replace("BaseResponse_", "") ?? type.Name;
+            }
+        });
+    }
+
     public static void AddServices(this WebApplicationBuilder builder)
     {
-        if(builder.Environment.IsDevelopment())
-        {
-            builder.Services.AddSwaggerGen(options =>
-            {
-                options.EnableAnnotations();
-                // Personaliza os nomes dos esquemas para garantir unicidade
-                options.CustomSchemaIds(type =>
-                {
-                    if (type.IsGenericType)
-                    {
-                        // Para tipos genéricos, exibe o nome base e os argumentos genéricos
-                        var genericTypeName = type.GetGenericTypeDefinition().Name;
-                        genericTypeName = genericTypeName.Substring(0, genericTypeName.IndexOf('`')); // Remove o sufixo `1, `2, etc.
-
-                        // Processa os argumentos genéricos recursivamente
-                        var genericArgs = string.Join("_", type.GenericTypeArguments.Select(ProcessTypeName));
-                        return $"{genericTypeName}_{genericArgs}";
-                    }
-
-                    // Para tipos não genéricos, inclui o namespace para garantir unicidade
-                    return ProcessTypeName(type);
-                });
-
-                static string ProcessTypeName(Type type)
-                {
-                    if (type.IsGenericType)
-                    {
-                        var genericTypeName = type.GetGenericTypeDefinition().Name;
-                        genericTypeName = genericTypeName.Substring(0, genericTypeName.IndexOf('`')); // Remove o sufixo `1, `2, etc.
-                        var genericArgs = string.Join("_", type.GenericTypeArguments.Select(ProcessTypeName));
-                        return $"{genericTypeName}_{genericArgs}";
-                    }
-
-                    if (type.FullName != null && type.FullName.Contains("UseCases"))
-                    {
-                        return type.FullName
-                            .Replace(".", "_")
-                            .Replace("BaseResponse_", "")
-                            .Substring(type.FullName.IndexOf("UseCases"));
-                    }
-
-                    return type.FullName?.Replace(".", "_").Replace("BaseResponse_", "") ?? type.Name;
-                }
-            });
-        }
+        if (builder.Environment.IsDevelopment())
+            builder.AddSwagger();
+            
         builder.Services.Configure<ForwardedHeadersOptions>(options =>
         {
             options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             options.KnownProxies.Clear();
         });
-        
+
         builder.Services.Configure<FormOptions>(options =>
         {
             options.MultipartBodyLengthLimit = 1024 * 1024 * 500;
@@ -184,7 +182,7 @@ public  static class BuilderExtensions
             logging.AddConsole();
             logging.AddDebug();
         });
-        
+
         builder.Services.AppServices();
         builder.Services.ConfigureInfraServices();
     }

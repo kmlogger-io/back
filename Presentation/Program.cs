@@ -1,16 +1,10 @@
 using Domain;
 using Infrastructure.DI;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Presentation.Common.Api;
 using Presentation.Middlewares;
-using Presentation.Common.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(5070, o => o.Protocols = HttpProtocols.Http1); 
-});
 
 builder.AddConfiguration();
 builder.AddSecurity();
@@ -29,12 +23,19 @@ var app = builder.Build();
 //     return;
 // }
 
+
 if (app.Environment.IsDevelopment())
+{
     app.ConfigureDevEnvironment();
+}
+else
+{
+    app.UseCors(Configuration.CorsPolicyName);
+    app.UseHttpsRedirection();
+}
 
 app.UseRouting();
 app.UseMiddleware<ExceptionHandler>();
-app.UseCors(Configuration.CorsPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

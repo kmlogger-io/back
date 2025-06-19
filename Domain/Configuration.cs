@@ -19,8 +19,7 @@ public static class Configuration
     public static string AwsKeyId { get; set; } = string.Empty;
     public static string ApiKey { get; set; } = string.Empty;
     public static string ApiKeyAttribute { get; set; } = string.Empty;
-    public static string ClickHouseConnectionString { get; set; } = string.Empty;    
-
+    public static string ConnectionString { get; set; } = string.Empty;    
     public static bool IsDevelopment { get; set; } = true;
     public static string CorsPolicyName { get; set; } = "KmLoggerCorsPolicy";
 }

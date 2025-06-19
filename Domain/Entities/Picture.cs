@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using Domain.Extensions;
 using Domain.ValueObjects;
 using Flunt.Br;
 
@@ -6,14 +8,16 @@ namespace Domain.Entities;
 
 public class Picture : Entity
 {
+    [NotMapped]
     public AppFile File { get; private set; } = null!;
     public UniqueName Name { get; private set; } = null!;
     public string AwsKey { get;  private set; } = null!;
     public DateTime UrlExpired { get; private set; }
     public string UrlTemp { get; private set; } = null!;
     public bool Ativo { get; private set; }
+    public string? Content {get; private set; }
     
-    private Picture(){}
+    private Picture() { }
     public Picture(AppFile file, UniqueName name, string awsKey, DateTime urlExpired, string urlTemp, bool ativo)
     {
         AddNotifications(
@@ -24,15 +28,16 @@ public class Picture : Entity
                 .IsNotNullOrEmpty(urlTemp, "Picture.UrlTemp", "UrlTemp cannot be null or empty")
                 .IsGreaterThan(urlExpired, DateTime.Now, "Picture.UrlExpired", "UrlExpired cannot be in the past")
         );
-        
+
         AddNotificationsFromValueObjects(file, name);
         if (!IsValid) return;
-        
+
         File = file;
         Name = name;
         AwsKey = awsKey;
         UrlExpired = urlExpired;
         UrlTemp = urlTemp;
         Ativo = ativo;
+        Content = file.File.ToBase64();
     }
 }

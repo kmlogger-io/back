@@ -10,7 +10,7 @@ public class Role : Entity
     public IList<User>? Users { get;  private set; }
     
     private Role(){}
-    public Role(UniqueName name, string slug, IList<User> users)
+    public Role(UniqueName name, string slug, IList<User>? users = null)
     {
         AddNotificationsFromValueObjects(name);
         Name = name;

@@ -9,39 +9,60 @@ namespace Infrastructure.Data.FluentMapping
         public void Configure(EntityTypeBuilder<Role> builder)
         {
             builder.ToTable("Roles");
+            
             builder.HasKey(r => r.Id);
+            
             builder.Property(r => r.Id)
                 .HasColumnName("Id")
-                .HasColumnType("UUID")
+                .HasColumnType("uuid")
                 .ValueGeneratedOnAdd()
                 .IsRequired();
+            
             builder.Property(r => r.CreatedDate)
                 .HasColumnName("CreatedDate")
-                .HasColumnType("DateTime")
+                .HasColumnType("timestamptz")
                 .HasDefaultValueSql("now()")
                 .IsRequired();
+            
             builder.Property(r => r.UpdatedDate)
                 .HasColumnName("UpdatedDate")
-                .HasColumnType("DateTime")
+                .HasColumnType("timestamptz")
                 .HasDefaultValueSql("now()")
                 .IsRequired();
+            
             builder.Property(r => r.DeletedDate)
                 .HasColumnName("DeletedDate")
-                .HasColumnType("DateTime")
+                .HasColumnType("timestamptz")
                 .IsRequired(false);
+            
+            // ValueObject UniqueName
             builder.OwnsOne(r => r.Name, name =>
             {
                 name.Property(n => n.Name)
-                    .HasColumnName("Name")
-                    .HasColumnType("String")
+                    .HasColumnName("RoleName")
+                    .HasColumnType("varchar(100)")
                     .HasMaxLength(100)
                     .IsRequired();
+                
+                // Índice único no nome da role
+                name.HasIndex(n => n.Name)
+                    .IsUnique()
+                    .HasDatabaseName("IX_Roles_Name_Unique");
             });
+            
             builder.Property(r => r.Slug)
                 .HasColumnName("Slug")
-                .HasColumnType("String")
+                .HasColumnType("varchar(100)")
                 .HasMaxLength(100)
                 .IsRequired();
+            
+            // Índices para performance
+            builder.HasIndex(r => r.CreatedDate)
+                .HasDatabaseName("IX_Roles_CreatedDate");
+            
+            builder.HasIndex(r => r.Slug)
+                .IsUnique()
+                .HasDatabaseName("IX_Roles_Slug_Unique");
         }
     }
 }
