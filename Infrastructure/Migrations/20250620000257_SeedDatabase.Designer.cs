@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(KmloggerDbContext))]
-    [Migration("20250619203748_SchemaInicial")]
-    partial class SchemaInicial
+    [Migration("20250620000257_SeedDatabase")]
+    partial class SeedDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -307,6 +307,14 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("timestamptz")
                         .HasColumnName("DeletedDate");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("varchar")
+                        .HasColumnName("RefreshToken");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("timestamptz")
+                        .HasColumnName("RefreshTokenExpiryTime");
 
                     b.Property<Guid?>("TokenActivate")
                         .HasColumnType("uuid")

@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -152,7 +149,7 @@ namespace Infrastructure.Migrations
         // Métodos auxiliares para hash da senha
         private static string GenerateSalt()
         {
-            var bytes = new byte[16]; // 16 bytes = 128 bits (compatível com seu ValueObject)
+            var bytes = new byte[16]; 
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(bytes);
             return Convert.ToBase64String(bytes);

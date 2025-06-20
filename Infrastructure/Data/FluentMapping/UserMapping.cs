@@ -130,7 +130,17 @@ namespace Infrastructure.Data.FluentMapping
                 
                 password.Ignore(p => p.Content);
             });
-            
+
+            builder.Property(u => u.RefreshToken)
+                .HasColumnName("RefreshToken")
+                .HasColumnType("varchar")
+                .IsRequired(false);
+
+            builder.Property(u => u.RefreshTokenExpiryTime)
+                .HasColumnName("RefreshTokenExpiryTime")
+                .HasColumnType("timestamptz")
+                .IsRequired(false);
+
             // Índices principais
             builder.HasIndex(u => u.CreatedDate)
                 .HasDatabaseName("IX_Users_CreatedDate");

@@ -12,7 +12,7 @@ public static class AppExtensions
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", $"KMLogger API {Configuration.VersionApi}");
-                c.RoutePrefix = string.Empty;
+                c.RoutePrefix = "swagger";
                 c.DocumentTitle = "KMLogger API Documentation";
                 c.DisplayRequestDuration();
                 c.EnableDeepLinking();

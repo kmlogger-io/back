@@ -27,6 +27,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.ConfigureDevEnvironment();
+    app.UseCors(policy => policy
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
 }
 else
 {

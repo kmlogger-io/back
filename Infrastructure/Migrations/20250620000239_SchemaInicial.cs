@@ -79,6 +79,8 @@ namespace Infrastructure.Migrations
                     PasswordSalt = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true),
                     Active = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     TokenActivate = table.Column<Guid>(type: "uuid", nullable: true),
+                    RefreshToken = table.Column<string>(type: "varchar", nullable: true),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamptz", nullable: false, defaultValueSql: "now()"),
                     UpdatedDate = table.Column<DateTime>(type: "timestamptz", nullable: false, defaultValueSql: "now()"),
                     DeletedDate = table.Column<DateTime>(type: "timestamptz", nullable: true)

@@ -305,6 +305,14 @@ namespace Infrastructure.Migrations
                         .HasColumnType("timestamptz")
                         .HasColumnName("DeletedDate");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("varchar")
+                        .HasColumnName("RefreshToken");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("timestamptz")
+                        .HasColumnName("RefreshTokenExpiryTime");
+
                     b.Property<Guid?>("TokenActivate")
                         .HasColumnType("uuid")
                         .HasColumnName("TokenActivate");

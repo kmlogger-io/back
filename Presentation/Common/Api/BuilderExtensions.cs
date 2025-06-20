@@ -107,6 +107,8 @@ public  static class BuilderExtensions
                         Configuration.BackendUrl,
                         Configuration.FrontendUrl,
                         Configuration.FrontendUrl.Replace("http://", "https://"),
+                        "http://localhost:5173",                    
+                        "https://localhost:5173"
                     ])
                     .AllowAnyMethod()
                     .AllowAnyHeader()
