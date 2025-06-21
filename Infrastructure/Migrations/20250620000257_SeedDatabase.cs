@@ -55,7 +55,7 @@ namespace Infrastructure.Migrations
 
             // 2. Gerar hash da senha 'admin'
             var salt = GenerateSalt();
-            var passwordHash = HashPassword("admin", salt);
+            var passwordHash = HashPassword("adminkmlogger", salt);
 
             // 3. Inserir usuário admin com ID gerado
             migrationBuilder.Sql($@"

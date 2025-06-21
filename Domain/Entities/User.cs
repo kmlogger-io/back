@@ -19,16 +19,15 @@ public class User : Entity
     public DateTime? RefreshTokenExpiryTime { get; private set; }
    
     protected User(){}
-   
-    public User(FullName? fullName, Email? email, Address? address, bool active, Password? password)
+
+    //Construtor para Register.
+    public User(FullName? fullName, Email? email, List<Role> roles)
     {
-        AddNotificationsFromValueObjects(fullName, email, password);
+        AddNotificationsFromValueObjects(fullName, email);
         FullName = fullName;
         Email = email;
-        Address = address;
-        Active = active;
-        Password = password;
-        TokenActivate = Guid.NewGuid();
+        Roles = roles;
+        Active = false;
     }
    
     public User(Email email, Password password)
@@ -40,13 +39,19 @@ public class User : Entity
     
     public void GenerateNewToken()
         => TokenActivate = Guid.NewGuid();
-        
+
     public void UpdatePassword(Password password)
     {
         AddNotificationsFromValueObjects(password);
         Password = password;
+        Active = true;
     }
-   
+
+    public void ResetPassword()
+    {
+        Active = false;
+    }
+
     public void AssignToken(string token) => Token = token;
     
     public void AssignRefreshToken(string refreshToken, DateTime expiryTime)
@@ -65,20 +70,4 @@ public class User : Entity
         => !string.IsNullOrEmpty(RefreshToken) && 
            RefreshTokenExpiryTime.HasValue && 
            RefreshTokenExpiryTime.Value > DateTime.UtcNow;
-    
-    public void AssignActivate(bool isActivate)
-    {
-        Active = isActivate;
-        TokenActivate = Guid.Empty;
-    }
-    
-    public void ClearToken()
-        => TokenActivate = Guid.Empty;
-        
-    public void AssignRole(Role role)
-    {
-        if (Roles == null)
-            Roles = new List<Role>();
-        Roles.Add(role);
-    }
 }

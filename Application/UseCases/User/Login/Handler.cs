@@ -1,10 +1,8 @@
-using System;
 using AutoMapper;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Records;
 using MediatR;
-using Flunt.Notifications;
 
 namespace Application.UseCases.User.Login;
 
@@ -14,7 +12,6 @@ public class Handler : IRequestHandler<Request, BaseResponse<Response>>
     private readonly ITokenService _tokenService;
     private readonly IMapper _mapper;
     private readonly IDbCommit _dbCommit;
-
 
     public Handler(IUserRepository userRepository, ITokenService tokenService, IMapper mapper, IDbCommit dbCommit)
     {
@@ -42,7 +39,7 @@ public class Handler : IRequestHandler<Request, BaseResponse<Response>>
         user.AssignRefreshToken(refreshToken, refreshTokenExpiry);
         
         await _userRepository.UpdateRefreshToken(user, cancellationToken);
-        await _dbCommit.Commit(cancellationToken);        
+        await _dbCommit.Commit(cancellationToken);          
 
         return new BaseResponse<Response>(200, "Login successful",
             new Response(accessToken, refreshToken, accessTokenExpiry, refreshTokenExpiry,
