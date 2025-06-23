@@ -56,7 +56,8 @@ public sealed class Password : BaseValueObject
 
     public bool VerifyPassword(string password, string storedSalt)
     {
-        var hashToVerify = GenerateHash(password, storedSalt); 
-        return hashToVerify == Hash; 
+        var hashToVerify = GenerateHash(password, storedSalt);
+        return hashToVerify == Hash && !string.IsNullOrEmpty(storedSalt) && !string.IsNullOrEmpty(Hash)
+            && !string.IsNullOrEmpty(password); 
     }
 }

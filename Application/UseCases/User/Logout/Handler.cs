@@ -21,13 +21,14 @@ public class Handler : IRequestHandler<Request, BaseResponse<Response>>
         if (string.IsNullOrEmpty(request.email))
             return new BaseResponse<Response>(401, "User not authenticated", null);
 
-        var user = await _userRepository.GetByEmail(request.email, cancellationToken);
+        var user = await _userRepository.GetWithParametersAsyncWithTracking(u => u.Email.Address.Equals(request.email),
+             cancellationToken);
         
         if (user is null)
             return new BaseResponse<Response>(404, "User not found", null);
 
         user.ClearRefreshToken();
-        await _userRepository.UpdateRefreshToken(user, cancellationToken);
+        _userRepository.Update(user);
         await _dbCommit.Commit(cancellationToken);
 
         return new BaseResponse<Response>(200, "User logged out successfully",

@@ -27,6 +27,7 @@ public class User : Entity
         FullName = fullName;
         Email = email;
         Roles = roles;
+        TokenActivate = Guid.NewGuid();
         Active = false;
     }
    
@@ -47,9 +48,22 @@ public class User : Entity
         Active = true;
     }
 
-    public void ResetPassword()
+    public void Disable()
     {
         Active = false;
+    }
+
+    public void Activate()
+    {
+        Active = true;
+        TokenActivate = null;
+    }
+
+    public void ConfirmForgotPassword(Password password)
+    {
+        AddNotificationsFromValueObjects(password);
+        Password = password;
+        TokenActivate = null;
     }
 
     public void AssignToken(string token) => Token = token;

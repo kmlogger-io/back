@@ -8,6 +8,7 @@ public static class Configuration
 
     public static string KEY_KMLOGGER = string.Empty;
     public static string BackendUrl { get; set; } = string.Empty;
+    public static string KmloggerCentralUrl { get; set; } = string.Empty;
     public static string FrontendUrl { get; set; } = string.Empty;
     public static string SmtpServer { get; set; } = string.Empty;
     public static string JwtKey { get; set; } = string.Empty;

@@ -10,17 +10,17 @@ using LogoutRequest = Application.UseCases.User.Logout.Request;
 using LogoutResponse = Application.UseCases.User.Logout.Response;
 using RegisterResponse = Application.UseCases.User.Register.Response;
 using RegisterRequest = Application.UseCases.User.Register.Request;
-using ResetPasswordResponse = Application.UseCases.User.ResetPassword.Response;
-using ResetPasswordRequest = Application.UseCases.User.ResetPassword.Request;
-using RegisterPasswordRequest = Application.UseCases.User.RegisterPassword.Request;
-using RegisterPasswordResponse = Application.UseCases.User.RegisterPassword.Response;
-using GetAllResponse = Application.UseCases.User.GetAll.Response;
 using GetAllRequest = Application.UseCases.User.GetAll.Request;
-
+using CompleteRegistrationRequest = Application.UseCases.User.CompleteRegistration.Request;
+using DeleteRequest = Application.UseCases.User.Delete.Request;
+using RequestForgotPasswordRequest = Application.UseCases.User.RequestForgotPassword.Request;
+using ConfirmForgotPasswordRequest = Application.UseCases.User.ConfirmForgotPassword.Request;
 
 using Swashbuckle.AspNetCore.Annotations;
 using Domain.Records;
 using Presentation.Common;
+using Domain.Records.DTOS;
+using System.Security.Claims;
 
 namespace Presentation.Controllers;
 
@@ -58,23 +58,22 @@ public class UserController(IMediator mediator) : ApiControllerBase
         return StatusCode(response.StatusCode, response);
     }
 
-
     [HttpPost("Logout")]
     [SwaggerOperation(OperationId = "UserLogout")]
     [Authorize]
     [ProducesResponseType(typeof(BaseResponse<LogoutResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<BaseResponse<LogoutResponse>>> Logout(
-        [FromBody] LogoutRequest request,
         CancellationToken cancellationToken)
     {
-        var response = await mediator.Send(request, cancellationToken);
+        var email = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+        var response = await mediator.Send(new LogoutRequest(email), cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
     [HttpPost("Register")]
     [SwaggerOperation(OperationId = "UserRegister")]
     [ProducesResponseType(typeof(BaseResponse<RegisterResponse>), StatusCodes.Status200OK)]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "admin")]
     public async Task<ActionResult<BaseResponse<RegisterResponse>>> Register(
         [FromBody] RegisterRequest request,
         CancellationToken cancellationToken)
@@ -83,36 +82,60 @@ public class UserController(IMediator mediator) : ApiControllerBase
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpPost("ResetPassword")]
-    [SwaggerOperation(OperationId = "UserResetPassword")]
-    [ProducesResponseType(typeof(BaseResponse<ResetPasswordResponse>), StatusCodes.Status200OK)]
-    [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<BaseResponse<ResetPasswordResponse>>> ResetPassword(
-        [FromBody] ResetPasswordRequest request,
-        CancellationToken cancellationToken)
-    {
-        var response = await mediator.Send(request, cancellationToken);
-        return StatusCode(response.StatusCode, response);
-    }
-
-    [HttpPost("RegisterPassword")]
-    [SwaggerOperation(OperationId = "UserRegisterPassword")]
-    [ProducesResponseType(typeof(BaseResponse<RegisterPasswordResponse>), StatusCodes.Status200OK)]
-    [AllowAnonymous]
-    public async Task<ActionResult<BaseResponse<RegisterPasswordResponse>>> RegisterPassword(
-        [FromBody] RegisterPasswordRequest request,
-        CancellationToken cancellationToken)
-    {
-        var response = await mediator.Send(request, cancellationToken);
-        return StatusCode(response.StatusCode, response);
-    }
-
     [HttpGet("GetAll")]
     [SwaggerOperation(OperationId = "UserGetAll")]
-    [ProducesResponseType(typeof(BaseResponse<GetAllResponse>), StatusCodes.Status200OK)]
-    [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<BaseResponse<GetAllResponse>>> GetAll(
+    [ProducesResponseType(typeof(BaseResponse<List<UserDto>>), StatusCodes.Status200OK)]
+    [Authorize(Roles = "admin")]
+    public async Task<ActionResult<BaseResponse<List<UserDto>>>> GetAll(
         [FromQuery] GetAllRequest request,
+        CancellationToken cancellationToken)
+    {
+        var response = await mediator.Send(request, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpDelete("Delete")]
+    [SwaggerOperation(OperationId = "UserDelete")]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status200OK)]
+    [Authorize(Roles = "admin")]
+    public async Task<ActionResult<BaseResponse<object>>> Delete(
+        [FromQuery] Guid id,
+        CancellationToken cancellationToken)
+    {
+        var response = await mediator.Send(new DeleteRequest(id), cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpPut("CompleteRegistration")]
+    [SwaggerOperation(OperationId = "UserCompleteRegistration")]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status200OK)]
+    [AllowAnonymous]
+    public async Task<ActionResult<BaseResponse<object>>> CompleteRegistration(
+        [FromBody] CompleteRegistrationRequest request,
+        CancellationToken cancellationToken)
+    {
+        var response = await mediator.Send(request, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpPost("RequestForgotPassword")]
+    [SwaggerOperation(OperationId = "UserRequestForgotPassword")]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status200OK)]
+    [AllowAnonymous]
+    public async Task<ActionResult<BaseResponse<object>>> RequestForgotPassword(
+        [FromQuery] RequestForgotPasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        var response = await mediator.Send(request, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpPost("ConfirmForgotPassword")]
+    [SwaggerOperation(OperationId = "UserConfirmForgotPassword")]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status200OK)]
+    [AllowAnonymous]
+    public async Task<ActionResult<BaseResponse<object>>> ConfirmForgotPassword(
+        [FromQuery] ConfirmForgotPasswordRequest request,
         CancellationToken cancellationToken)
     {
         var response = await mediator.Send(request, cancellationToken);

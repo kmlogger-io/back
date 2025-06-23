@@ -20,11 +20,11 @@ public  static class BuilderExtensions
     public static void AddConfiguration(
         this WebApplicationBuilder builder)
     {
-        var projectRoot = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\.."));
         Configuration.IsDevelopment = builder.Environment.IsDevelopment();
         Configuration.JwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? string.Empty;
         Configuration.BackendUrl = Environment.GetEnvironmentVariable("BACKEND_URL") ?? string.Empty;
         Configuration.VersionApi = Environment.GetEnvironmentVariable("VERSION_API") ?? string.Empty;
+        Configuration.KmloggerCentralUrl = Environment.GetEnvironmentVariable("KML_CENTRAL_URL") ?? string.Empty;
         Configuration.KEY_KMLOGGER = Environment.GetEnvironmentVariable("KEY_KMLOGGER") ?? string.Empty;
         Configuration.FrontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL") ?? "http://localhost:4200";
         Configuration.SmtpUser = Environment.GetEnvironmentVariable("SMTP_USER") ?? string.Empty;
@@ -89,8 +89,8 @@ public  static class BuilderExtensions
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.JwtKey)),
+                ValidateAudience = false,
                 ValidateIssuer = false,
-                ValidateAudience = false
             };
         });
         builder.Services.AddAuthorization();

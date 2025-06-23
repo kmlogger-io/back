@@ -6,6 +6,7 @@ using Infrastructure.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Domain;
+using System.Net.Http.Headers;
 
 namespace Infrastructure.DI;
 
@@ -16,11 +17,21 @@ public static class ServicesExtensions
         services.AddScoped<IDbCommit, DbCommit>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IAppRepository, AppRepository>();
         services.AddScoped<ILogRepository, LogRepository>();
-        services.AddHttpClient();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IKmCentralService, KmCentralService>();
+        services.AddHttpClient("KmCentral", client =>
+        {
+            client.BaseAddress = new Uri(Configuration.KmloggerCentralUrl);
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Authorization = 
+                new AuthenticationHeaderValue("X-API-KEY", Configuration.KEY_KMLOGGER);
+            client.Timeout = TimeSpan.FromSeconds(60);
+        });
     }
 
     public static void AddDataContexts(this IServiceCollection services)

@@ -1,5 +1,4 @@
 using Domain.Records;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Common

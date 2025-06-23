@@ -10,7 +10,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Services;
 
-
 public sealed class TokenService : ITokenService
 {
     public string GenerateToken(User user)
@@ -33,7 +32,7 @@ public sealed class TokenService : ITokenService
         rng.GetBytes(randomNumber);
         return Convert.ToBase64String(randomNumber);
     }
-    
+   
     public ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
     {
         var tokenValidationParameters = new TokenValidationParameters
@@ -42,16 +41,14 @@ public sealed class TokenService : ITokenService
             ValidateIssuer = false,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.JwtKey)),
-            ValidateLifetime = false 
+            ValidateLifetime = false
         };
-
         var tokenHandler = new JwtSecurityTokenHandler();
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
-        
-        if (securityToken is not JwtSecurityToken jwtSecurityToken || 
+       
+        if (securityToken is not JwtSecurityToken jwtSecurityToken ||
             !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             throw new SecurityTokenException("Invalid token");
-
         return principal;
     }
 }
@@ -59,12 +56,20 @@ public sealed class TokenService : ITokenService
 public static class RoleClaimsExtensions
 {
     public static IEnumerable<Claim> GetClaims(this User user)
-    {   
+    {  
         var result = new List<Claim>
         {
             new Claim(ClaimTypes.Email, user.Email.Address!),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
         };
+
+        if (user.Roles != null && user.Roles.Any())
+        {
+            foreach (var role in user.Roles)
+            {
+                result.Add(new Claim(ClaimTypes.Role, role.Slug)); 
+            }
+        }
         return result;
     }
 }
