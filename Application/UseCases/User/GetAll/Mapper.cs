@@ -11,6 +11,7 @@ public class Mapper : Profile
                 src.Id.ToString(),
                 $"{src.FullName.FirstName} {src.FullName.LastName}",
                 src.Email.Address, 
+                src.CreatedDate,
                 src.Roles != null 
                     ? src.Roles.Select(role => new Domain.Records.DTOS.RoleDto(
                         role.Id.ToString(),

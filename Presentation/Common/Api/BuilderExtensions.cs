@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Application.DI;
 using Newtonsoft.Json.Serialization;
 using Presentation.Common.Converters;
+using Presentation.Common.Filters;
 
 namespace Presentation.Common.Api;
 
@@ -119,6 +120,15 @@ public  static class BuilderExtensions
         builder.Services.AddSwaggerGen(options =>
         {
             options.EnableAnnotations();
+            options.SupportNonNullableReferenceTypes();
+            options.SchemaFilter<RequiredNotNullableSchemaFilter>();
+            options.UseAllOfToExtendReferenceSchemas();
+            options.UseInlineDefinitionsForEnums();
+            options.SchemaGeneratorOptions = new()
+            {
+                SupportNonNullableReferenceTypes = true
+            };
+            
             options.CustomSchemaIds(type =>
             {
                 if (type.IsGenericType)
@@ -138,7 +148,7 @@ public  static class BuilderExtensions
                 if (type.IsGenericType)
                 {
                     var genericTypeName = type.GetGenericTypeDefinition().Name;
-                    genericTypeName = genericTypeName.Substring(0, genericTypeName.IndexOf('`')); // Remove o sufixo `1, `2, etc.
+                    genericTypeName = genericTypeName.Substring(0, genericTypeName.IndexOf('`'));
                     var genericArgs = string.Join("_", type.GenericTypeArguments.Select(ProcessTypeName));
                     return $"{genericTypeName}_{genericArgs}";
                 }
