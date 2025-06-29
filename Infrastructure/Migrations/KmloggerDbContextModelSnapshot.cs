@@ -587,7 +587,7 @@ namespace Infrastructure.Migrations
                                 .HasColumnName("FirstName");
 
                             b1.Property<string>("LastName")
-                                .IsRequired()
+                                .IsRequired(false)
                                 .HasMaxLength(100)
                                 .HasColumnType("varchar(100)")
                                 .HasColumnName("LastName");

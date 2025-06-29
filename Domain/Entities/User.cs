@@ -12,13 +12,13 @@ public class User : Entity
     public bool Active { get; private set; }
     public IList<Role> Roles { get; private set; }
     public Guid? TokenActivate { get; private set; }
-   
+
     [NotMapped]
     public string Token { get; private set; }
     public string? RefreshToken { get; private set; }
     public DateTime? RefreshTokenExpiryTime { get; private set; }
-   
-    protected User(){}
+
+    protected User() { }
 
     //Construtor para Register.
     public User(FullName? fullName, Email? email, List<Role> roles)
@@ -30,14 +30,14 @@ public class User : Entity
         TokenActivate = Guid.NewGuid();
         Active = false;
     }
-   
+
     public User(Email email, Password password)
     {
         AddNotificationsFromValueObjects(email, password);
         Password = password;
         Email = email;
     }
-    
+
     public void GenerateNewToken()
         => TokenActivate = Guid.NewGuid();
 
@@ -67,21 +67,34 @@ public class User : Entity
     }
 
     public void AssignToken(string token) => Token = token;
-    
+
     public void AssignRefreshToken(string refreshToken, DateTime expiryTime)
     {
         RefreshToken = refreshToken;
         RefreshTokenExpiryTime = expiryTime;
     }
-    
+
     public void ClearRefreshToken()
     {
         RefreshToken = null;
         RefreshTokenExpiryTime = null;
     }
-    
+
     public bool IsRefreshTokenValid()
-        => !string.IsNullOrEmpty(RefreshToken) && 
-           RefreshTokenExpiryTime.HasValue && 
+        => !string.IsNullOrEmpty(RefreshToken) &&
+           RefreshTokenExpiryTime.HasValue &&
            RefreshTokenExpiryTime.Value > DateTime.UtcNow;
+
+    public void SetRoles(List<Role> newRoles)
+    {
+        Roles ??= new List<Role>();
+        var currentRolesId = Roles.Select(r => r.Id).ToHashSet();
+        var rolesToAdd = newRoles.Where(r => !currentRolesId.Contains(r.Id));
+        foreach (var role in rolesToAdd)
+        {
+            Roles.Add(role);
+        }
+    }
+    public void UpdateName(FullName fullName)
+        => FullName = fullName;
 }

@@ -15,6 +15,7 @@ using CompleteRegistrationRequest = Application.UseCases.User.CompleteRegistrati
 using DeleteRequest = Application.UseCases.User.Delete.Request;
 using RequestForgotPasswordRequest = Application.UseCases.User.RequestForgotPassword.Request;
 using ConfirmForgotPasswordRequest = Application.UseCases.User.ConfirmForgotPassword.Request;
+using UpdateUserRequest = Application.UseCases.User.Update.Request;
 
 using Swashbuckle.AspNetCore.Annotations;
 using Domain.Records;
@@ -82,11 +83,23 @@ public class UserController(IMediator mediator) : ApiControllerBase
         return StatusCode(response.StatusCode, response);
     }
 
+    [HttpPut("Update")]
+    [SwaggerOperation(OperationId = "UserUpdate")]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status200OK)]
+    [Authorize(Roles = "admin")]
+    public async Task<ActionResult<BaseResponse<object>>> Update(
+        [FromBody] UpdateUserRequest request,
+        CancellationToken cancellationToken)
+    {
+        var response = await mediator.Send(request, cancellationToken);
+        return StatusCode(response.StatusCode, response);
+    }
+
     [HttpGet("GetAll")]
     [SwaggerOperation(OperationId = "UserGetAll")]
-    [ProducesResponseType(typeof(BaseResponse<List<UserDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<PaginatedResult<UserDto>>), StatusCodes.Status200OK)]
     [Authorize(Roles = "admin")]
-    public async Task<ActionResult<BaseResponse<List<UserDto>>>> GetAll(
+    public async Task<ActionResult<BaseResponse<PaginatedResult<UserDto>>>> GetAll(
         [FromQuery] GetAllRequest request,
         CancellationToken cancellationToken)
     {

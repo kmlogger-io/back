@@ -40,7 +40,7 @@ public class Handler(
 
         _roleRepository.AttachRange(rolesList);
         var newUser = new Domain.Entities.User(
-            request.FullName,
+            new FullName(request.FirstName, request.LastName),
             new Email(request.Email),
             rolesList
         );

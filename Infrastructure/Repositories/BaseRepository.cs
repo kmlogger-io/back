@@ -82,24 +82,37 @@ public class BaseRepository<T>(DbContext context)
                           .ToListAsync(cancellationToken);
     }
 
-    public virtual async Task<List<T>> GetAllWithParametersAsync(
+    public async Task<IEnumerable<T>> GetAllWithParametersAsync(
         Expression<Func<T, bool>>? filter = null,
         CancellationToken cancellationToken = default,
-        int skip = 0,
-        int take = 10,
+        int? skip = null,
+        int? take = null,
+        Expression<Func<T, object>>? orderBy = null,
+        bool ascending = true,
         params Expression<Func<T, object>>[] includes)
     {
-        var query = context.Set<T>().AsQueryable();
+        IQueryable<T> query = context.Set<T>();
+        foreach (var include in includes)
+        {
+            query = query.Include(include);
+        }
         if (filter != null)
         {
             query = query.Where(filter);
         }
-
-        query = includes.Aggregate(query, (current, include) => current.Include(include));
-        return await query.AsNoTracking()
-                          .Skip(skip)
-                          .Take(take)
-                          .ToListAsync(cancellationToken);
+        if (orderBy != null)
+        {
+            query = ascending ? query.OrderBy(orderBy) : query.OrderByDescending(orderBy);
+        }
+        if (skip.HasValue)
+        {
+            query = query.Skip(skip.Value);
+        }
+        if (take.HasValue)
+        {
+            query = query.Take(take.Value);
+        }
+        return await query.ToListAsync(cancellationToken);
     }
 
     /// <summary>
@@ -257,6 +270,19 @@ public class BaseRepository<T>(DbContext context)
         {
             Attach(entity);
         }
+    }
+
+
+    public async Task<int> CountAsync(
+        Expression<Func<T, bool>>? filter = null,
+        CancellationToken cancellationToken = default)
+    {
+        IQueryable<T> query = context.Set<T>();
+        if (filter is not null)
+        {
+            query = query.Where(filter);
+        }
+        return await query.CountAsync(cancellationToken);
     }
 
     public virtual bool IsTracked(T entity)

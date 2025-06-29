@@ -17,19 +17,21 @@ public interface IBaseRepository<T> where T : Entity
         CancellationToken cancellationToken = default,
         params Expression<Func<T, object>>[] includes);
 
-    Task<List<T>> GetAllWithParametersAsync(
+     Task<IEnumerable<T>> GetAllWithParametersAsync(
         Expression<Func<T, bool>>? filter = null,
         CancellationToken cancellationToken = default,
-        int skip = 0,
-        int take = 10,
+        int? skip = null,
+        int? take = null,
+        Expression<Func<T, object>>? orderBy = null,
+        bool ascending = true,
         params Expression<Func<T, object>>[] includes);
-    
+
     void Attach<TConcrete>(TConcrete entity) where TConcrete : Entity;
     void Attach(T entity);
     void AttachRange(IEnumerable<T> entities);
     void AttachRange<TConcrete>(IEnumerable<TConcrete> entities) where TConcrete : Entity;
     bool IsTracked(T entity);
-    
+
     Task<List<TResult>> GetAllProjectedAsync<TResult>(
         Expression<Func<T, bool>>? filter = null,
         Expression<Func<T, TResult>> selector = null!,
@@ -75,4 +77,7 @@ public interface IBaseRepository<T> where T : Entity
         Expression<Func<T, TResult>> selector = null!,
         CancellationToken cancellationToken = default,
         params Expression<Func<T, object>>[] includes);
+        
+     Task<int> CountAsync(Expression<Func<T, bool>>? filter = null,
+        CancellationToken cancellationToken = default);
 }

@@ -48,7 +48,7 @@ namespace Infrastructure.Data.FluentMapping
                     .HasColumnName("LastName")
                     .HasColumnType("varchar(100)")
                     .HasMaxLength(100)
-                    .IsRequired();
+                    .IsRequired(false);
                 
                 // Índice para busca por nome completo
                 fullName.HasIndex(f => new { f.FirstName, f.LastName })

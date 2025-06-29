@@ -5,7 +5,8 @@ using MediatR;
 namespace Application.UseCases.User.Register;
 
 public record Request(
-    FullName FullName,
+    string FirstName,
+    string? LastName,
     string Email,
     List<Guid> RolesId
 ) : IRequest<BaseResponse<Response>>; 

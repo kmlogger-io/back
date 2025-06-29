@@ -2,7 +2,7 @@ using Domain.Records;
 using Domain.Records.DTOS;
 using MediatR;
 
-namespace Application.UseCases.User.GetAll;
+namespace Application.UseCases.Role.GetAll;
 
 public record Request(
     int Page = 1,
@@ -10,4 +10,4 @@ public record Request(
     string? Search = null,
     string? SortBy = null,
     string? SortOrder = "asc"
-) : IRequest<BaseResponse<PaginatedResult<UserDto>>>;
+) : IRequest<BaseResponse<PaginatedResult<RoleDto>>>;

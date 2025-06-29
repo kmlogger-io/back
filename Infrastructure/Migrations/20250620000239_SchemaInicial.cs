@@ -69,7 +69,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FirstName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
                     EmailAddress = table.Column<string>(type: "varchar(254)", maxLength: 254, nullable: false),
                     AddressRoad = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true),
                     AddressNeighborHood = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
